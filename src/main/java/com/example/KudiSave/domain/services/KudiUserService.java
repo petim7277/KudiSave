@@ -57,12 +57,31 @@ public class KudiUserService implements KudiUserManagementUseCase {
 
     }
 
+//
+//    @Override
+//    public String createPassword(String password) throws KudiSaveExceptions {
+//        KudiUserEntity foundUser = appUserRepository.findAppUsersByEmail(userDomainObject.getEmail());
+//        if (foundUser== null){
+//            throw  new KudiUserNotFoundException(ErrorMessages.KUDI_USER_NOT_FOUND,HttpStatus.NOT_FOUND);
+//        }
+//        if (foundUser.getPassword() == null){
+//            throw  new KudiUserNotFoundException(ErrorMessages.KUDI_USER_NOT_FOUND,HttpStatus.NOT_FOUND);
+//
+//        }
+//        if (kudiUserIdentityManagerOutPutPort.findKeycloakUserByEmail(foundUser.getEmail()) == null) {
+//            throw new KudiUserNotFoundException(ErrorMessages.KUDI_KEYCLOAK_USER_NOT_FOUND,HttpStatus.NOT_FOUND);
+//        }
+//        return "User with email"+foundUser.getEmail()+" has been logged in  and username"+foundUser.getUsername();
+//    }
 
     @Override
     public String signIn(KudiUser userDomainObject) throws KudiSaveExceptions {
         KudiUserEntity foundUser = appUserRepository.findAppUsersByEmail(userDomainObject.getEmail());
-        if (foundUser== null){throw  new KudiUserNotFoundException(ErrorMessages.KUDI_USER_NOT_FOUND,HttpStatus.NOT_FOUND);}
+        if (foundUser== null){
+            throw  new KudiUserNotFoundException(ErrorMessages.KUDI_USER_NOT_FOUND,HttpStatus.NOT_FOUND);
+        }
         if (foundUser.getPassword() == null){
+            throw  new KudiUserNotFoundException(ErrorMessages.KUDI_USER_NOT_FOUND,HttpStatus.NOT_FOUND);
 
         }
         if (kudiUserIdentityManagerOutPutPort.findKeycloakUserByEmail(foundUser.getEmail()) == null) {
