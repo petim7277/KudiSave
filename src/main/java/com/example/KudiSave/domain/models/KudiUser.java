@@ -1,15 +1,18 @@
-package com.example.KudiSave;
+package com.example.KudiSave.domain.models;
+
+
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import org.keycloak.representations.account.UserRepresentation;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Document
-@Setter
 @Getter
+@Setter
+@ToString
 public class KudiUser {
     @Id
     private String id;
@@ -19,11 +22,7 @@ public class KudiUser {
     private String password;
     private String email;
     private String phoneNumber;
-    private String bvn;
-    private String nin;
     private LocalDateTime createdAt = LocalDateTime.now();
-//    private UserRepresentation userRepresentation;
-//    @Enumerated(EnumType.STRING)
-//    private AccountType accountType;
-//    private AppAccount appAccount;
+    private UserRepresentation userRepresentation;
+
 }
