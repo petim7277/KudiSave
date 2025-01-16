@@ -34,7 +34,7 @@ public class TransactionService implements TransactionManagementUseCase {
     public InitializeTransactionResponse startTransaction(InitializeTransactionRequest transactionRequest) {
         RestTemplate restTemplate = new RestTemplate();
         InitializeTransactionResponse transactionResponse = new InitializeTransactionResponse();
-        KudiUserEntity foundUser = appUserRepository.findAppUsersByEmail(transactionRequest.getEmail());
+        KudiUserEntity foundUser = appUserRepository.findKudiUserByEmail(transactionRequest.getEmail());
         if (foundUser != null) {
             HttpEntity<InitializeTransactionRequest> request = buildPayment(transactionRequest);
             ResponseEntity<InitializeTransactionResponse>  response = restTemplate

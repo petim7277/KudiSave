@@ -2,8 +2,6 @@ package com.example.KudiSave.persistence.adapters;
 
 import com.example.KudiSave.domain.exceptions.KudiSaveExceptions;
 import com.example.KudiSave.domain.models.KudiUser;
-import com.example.KudiSave.domain.models.enums.AccountType;
-import com.example.KudiSave.infrastructure.output.exception.IdentityManagerException;
 import com.example.KudiSave.infrastructure.output.persistence.adapters.KudiUserPersistenceAdapter;
 import com.example.KudiSave.infrastructure.output.persistence.repositories.KudiUserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +35,6 @@ class KudiUserPersistenceAdapterTest {
         appUser.setFirstname("Nelson");
         appUser.setLastname("Akewe");
         appUser.setUsername("nelly");
-        appUser.setPassword("password");
         appUser.setEmail("nelsonakewe@gmail.com");
         appUser.setPhoneNumber("09262280695");
         tearDown();
@@ -51,7 +48,7 @@ class KudiUserPersistenceAdapterTest {
     @Test
     void test_SaveUser() {
         KudiUser savedUser = kudiUserPersistenceAdapter.saveUser(appUser);
-        assertThat(savedUser.getId(), is(notNullValue()));
+        assertNotNull(savedUser.getId());
         assertNotNull(savedUser);
         assertEquals(1,kudiUserRepository.count());
         log.info("Saved Kudi User === >>>  {}", savedUser);
@@ -61,8 +58,9 @@ class KudiUserPersistenceAdapterTest {
     void test_FindUserById() {
         KudiUser savedUser = kudiUserPersistenceAdapter.saveUser(appUser);
         assertNotNull(savedUser);
-        KudiUser user = kudiUserPersistenceAdapter.findUserById(savedUser.getId());
-        assertNotNull(user);
+        KudiUser foundUser = kudiUserPersistenceAdapter.findUserById(savedUser.getId());
+        log.info("Found Kudi User === >>>  {}", savedUser);
+        assertNotNull(foundUser);
     }
 
     @Test
@@ -92,5 +90,22 @@ class KudiUserPersistenceAdapterTest {
 
     }
 
+    @Test
+    void test_UpdateUser() {
+        KudiUser savedUser = kudiUserPersistenceAdapter.saveUser(appUser);
+        log.info("Saved User::==> {}",savedUser);
+        assertNotNull(savedUser);
+        assertNull(savedUser.getPassword());
+        assertNull(savedUser.getConfirmPassword());
+        savedUser.setPassword("password");
+        savedUser.setConfirmPassword("password");
+        KudiUser createdPassword = kudiUserPersistenceAdapter.createPassword(savedUser);
+        log.info("Updated User::==> {}",createdPassword);
+        log.info("Created User password :==>>>  {} ", createdPassword.getPassword());
+        log.info("Created User Confirm password :==>>>  {} ", createdPassword.getConfirmPassword());
+        kudiUserPersistenceAdapter.deleteUserEntity(createdPassword);
+        assertEquals(0,kudiUserRepository.count());
+
+    }
 
 }

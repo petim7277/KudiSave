@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface KudiUserRepository extends MongoRepository<KudiUserEntity,String> {
-    KudiUserEntity findAppUsersByEmail(String email);
-
+    KudiUserEntity findKudiUserByEmail(String email);
 
 }

@@ -9,6 +9,8 @@ public interface KudiUserManagementUseCase {
 
     KudiUser signUp(KudiUser domainObject) throws KudiSaveExceptions;
 
+    String createPassword(KudiUser kudiUser) throws KudiSaveExceptions;
+
     String signIn(KudiUser userDomainObject)  throws KudiSaveExceptions;
 
     RecieveMoneyResponse recieveMoney(RecieveMoneyRequest recieveMoneyRequest);

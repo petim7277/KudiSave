@@ -10,13 +10,15 @@ import com.example.KudiSave.infrastructure.output.persistence.mapper.KudiUserPer
 import com.example.KudiSave.infrastructure.output.persistence.repositories.KudiUserRepository;
 import io.micrometer.common.util.StringUtils;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @AllArgsConstructor
 public class KudiUserPersistenceAdapter implements KudiUserPersistencePort {
-    private  final KudiUserRepository appUserRepository;
+    private  final KudiUserRepository kudiUserRepository;
     private final   KudiUserPersistenceMapper appUserPersistenceMapper;
 
     @Override
@@ -25,14 +27,14 @@ public class KudiUserPersistenceAdapter implements KudiUserPersistencePort {
             throw new KudiSaveExceptions(ErrorMessages.KUDI_USER_OBJECT_CANT_BE_EMPTY_OR_NULL,HttpStatus.BAD_REQUEST);
         }
       KudiUserEntity mappedEntity = appUserPersistenceMapper.toKudiUserEntity(kudiUser);
-      KudiUserEntity savedEntity = appUserRepository.save(mappedEntity);
+      KudiUserEntity savedEntity = kudiUserRepository.save(mappedEntity);
       return appUserPersistenceMapper.toKudiUser(savedEntity);
     }
 
     @Override
     public KudiUser findUserById(String userId) throws KudiSaveExceptions {
         if (StringUtils.isNotBlank(userId) || StringUtils.isEmpty(userId)) {
-            KudiUserEntity foundEntity = appUserRepository.findById(userId)
+            KudiUserEntity foundEntity = kudiUserRepository.findById(userId)
                     .orElseThrow(()-> new IdentityManagerException(ErrorMessages.KUDI_USER_NOT_FOUND, HttpStatus.NOT_FOUND));
             return appUserPersistenceMapper.toKudiUser(foundEntity);
         }
@@ -45,7 +47,7 @@ public class KudiUserPersistenceAdapter implements KudiUserPersistencePort {
             throw new KudiSaveExceptions(ErrorMessages.KUDI_USER_EMAIL_CANT_BE_EMPTY, HttpStatus.BAD_REQUEST);
         }
         else {
-            KudiUserEntity foundEntity = appUserRepository.findAppUsersByEmail(email);
+            KudiUserEntity foundEntity = kudiUserRepository.findKudiUserByEmail(email);
             return appUserPersistenceMapper.toKudiUser(foundEntity);
         }
     }
@@ -55,6 +57,24 @@ public class KudiUserPersistenceAdapter implements KudiUserPersistencePort {
                 ErrorMessages.KUDI_USER_OBJECT_CANT_BE_EMPTY_OR_NULL, HttpStatus.BAD_REQUEST);
         }
         KudiUserEntity mappedEntity = appUserPersistenceMapper.toKudiUserEntity(kudiUser);
-        appUserRepository.delete(mappedEntity);
+        kudiUserRepository.delete(mappedEntity);
+    }
+
+    @Override
+    public KudiUser createPassword(KudiUser kudiUser) {
+        if (!kudiUser.getPassword().equals(kudiUser.getConfirmPassword())) {
+            throw new KudiSaveExceptions(ErrorMessages.INVALID_PASSWORD_FIELD_ENSURE_CONFIRM_PASSWORD_FIELD_IS_INVALID);
+        }
+        KudiUserEntity foundUserEntity = kudiUserRepository.findKudiUserByEmail(kudiUser.getEmail());
+        if (foundUserEntity == null) {
+            throw new KudiSaveExceptions(ErrorMessages.KUDI_USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+        if (foundUserEntity.getPassword() != null || foundUserEntity.getConfirmPassword() != null) {
+            throw new KudiSaveExceptions(ErrorMessages.PASSWORD_HAS_READY_BEEN_CREATED_FOR_USER,HttpStatus.FORBIDDEN);
+        }
+        foundUserEntity.setPassword(kudiUser.getPassword());
+        foundUserEntity.setConfirmPassword(kudiUser.getConfirmPassword());
+        foundUserEntity = kudiUserRepository.save(foundUserEntity);
+        return  appUserPersistenceMapper.toKudiUser(foundUserEntity);
     }
 }

@@ -20,6 +20,7 @@ public class KudiUser {
     private String lastname;
     private String username;
     private String password;
+    private String confirmPassword;
     private String email;
     private String phoneNumber;
     private LocalDateTime createdAt = LocalDateTime.now();

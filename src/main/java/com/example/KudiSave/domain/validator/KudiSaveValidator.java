@@ -23,7 +23,7 @@ public class KudiSaveValidator {
         if (!name.matches(pattern)) {throw new InvalidInputFieldsException(ErrorMessages.INVALID_USERNAME_FIELD);}
     }
 
-    public static void validateEmail(String email) {
+    public static void validateEmail(String email)  {
         if (StringUtils.isEmpty(email) || StringUtils.isEmpty(email.trim())) {
             throw new InvalidInputFieldsException(ErrorMessages.INPUT_FIELD_IS_EMPTY, HttpStatus.BAD_REQUEST);
         }

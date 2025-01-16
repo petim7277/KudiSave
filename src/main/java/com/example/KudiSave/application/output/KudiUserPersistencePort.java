@@ -9,4 +9,5 @@ public interface KudiUserPersistencePort {
     KudiUser findUserById(String userId) throws KudiSaveExceptions;
     KudiUser findUserByEmail(String email) throws KudiSaveExceptions;
     void deleteUserEntity(KudiUser appUserDomainObject) throws KudiSaveExceptions;
+    KudiUser createPassword(KudiUser kudiUser);
 }

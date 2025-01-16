@@ -10,11 +10,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface KudiUserPersistenceMapper {
-    @Mapping(target = "id", ignore = true)
     KudiUserEntity toKudiUserEntity(KudiUser appUserDomainObject);
-    @Mapping(target = "id", ignore = true)
     KudiUser toKudiUser(KudiUserEntity appUserEntity);
     UserRepresentation toUserRepresentation(KudiUser userDomainObject);
-    @Mapping(target = "id", ignore = true)
-    KudiUser toAppDomainObject(UserRepresentation userRepresentation);
 }

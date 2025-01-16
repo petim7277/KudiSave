@@ -21,6 +21,7 @@ public class KudiUserEntity {
     private String lastname;
     private String username;
     private String password;
+    private String confirmPassword;
     @Field(write = Field.Write.NON_NULL)
     private String email;
     private String phoneNumber;
